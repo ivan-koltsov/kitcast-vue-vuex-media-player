@@ -1,38 +1,28 @@
 <template>
   <div class="media-player">
-    <Image :src="currentMedia?.url" />
-    <Video :src="currentMedia?.url" />
+    <template v-if="data">
+      <Image v-if="data.type === 'image'" :src="data.url" />
+      <Video v-if="data.type === 'video'" :src="data.url" />
+    </template>
+    <div v-else>Loading...</div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import Image from './Image.vue'
+import Video from './Video.vue'
 
 export default {
   name: 'MediaPlayer',
-  data() {
-    return {
-      data: null,
-    };
-  },
-  async mounted() {
-    const response = await axios.get('/api/data');
-    this.data = response.data.data;
-  },
   components: {
-    Image: {
-      props: ['src'],
-      template: '<img :src="src" class="media-img" alt="Media" />',
-    },
-    Video: {
-      props: ['src'],
-      template: `
-        <video controls autoplay width="640" height="480">
-          <source :src="src" type="video/mp4">
-          Your browser does not support the video tag.
-        </video>
-      `,
-    },
+    Image,
+    Video
+  },
+  props: {
+    data: {
+      type: Object,
+      required: true
+    }
   }
 };
 </script>
