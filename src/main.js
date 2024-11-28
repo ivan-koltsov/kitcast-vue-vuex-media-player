@@ -11,12 +11,17 @@ mock.onGet('/api/data').reply(200, {
     {
       id: 1,
       type: 'image',
-      url: 'https://picsum.photos/800/400'
+      url: 'https://picsum.photos/800/400?random=1'
     },
     {
       id: 2,
       type: 'video',
       url: 'https://www.w3schools.com/html/mov_bbb.mp4'
+    },
+    {
+      id: 3,
+      type: 'image',
+      url: 'https://picsum.photos/800/400?random=2'
     }
   ]
 });

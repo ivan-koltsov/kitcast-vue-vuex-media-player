@@ -3,30 +3,39 @@ import axios from 'axios';
 
 const store = createStore({
   state: {
-    data: null,
+    playlist: [],
+    currentIndex: 0,
     isLoading: false,
     error: null
   },
   getters: {
-    currentMedia: state => state.data
+    currentMedia: state => state.playlist[state.currentIndex] || null
   },
   mutations: {
-    setData(state, data) {
-      state.data = data;
+    setPlaylist(state, playlist) {
+      state.playlist = playlist;
+    },
+    setCurrentIndex(state, index) {
+      state.currentIndex = index;
     },
     setLoading(state, status) {
       state.isLoading = status;
     },
     setError(state, error) {
       state.error = error;
+    },
+    nextSlide(state) {
+      state.currentIndex = (state.currentIndex + 1) % state.playlist.length;
     }
   },
   actions: {
-    async fetchData({ commit }) {
+    async fetchData({ commit, dispatch }) {
       commit('setLoading', true);
       try {
         const response = await axios.get('/api/data');
-        commit('setData', response.data.data[0]);
+        commit('setPlaylist', response.data.data);
+        commit('setCurrentIndex', 0);
+        dispatch('startSlideshow');
       } catch (error) {
         console.error('Error fetching data:', error);
         commit('setError', error.message);
@@ -34,7 +43,15 @@ const store = createStore({
         commit('setLoading', false);
       }
     },
-  },
+    startSlideshow({ commit, state }) {
+      const duration = 5000;
+      setInterval(() => {
+        if (state.playlist.length > 0) {
+          commit('nextSlide');
+        }
+      }, duration);
+    }
+  }
 });
 
 export default store;

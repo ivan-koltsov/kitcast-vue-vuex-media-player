@@ -1,8 +1,13 @@
 <template>
   <div class="media-player">
     <template v-if="data">
-      <Image v-if="data.type === 'image'" :src="data.url" />
-      <Video v-if="data.type === 'video'" :src="data.url" />
+      <transition name="fade" mode="out-in">
+        <component 
+          :is="data.type === 'image' ? 'Image' : 'Video'"
+          :key="data.id"
+          :src="data.url"
+        />
+      </transition>
     </template>
     <div v-else>Loading...</div>
   </div>
@@ -29,17 +34,21 @@ export default {
 
 <style scoped>
 .media-player {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
-.media-img {
-  max-width: 100%;
-  height: auto;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
 }
 
-.controls {
-  margin-top: 10px;
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
