@@ -1,15 +1,12 @@
 <template>
   <div class="media-player">
-    <image v-if="currentMedia && currentMedia.type === 'image'" 
-           :src="currentMedia.url" />
-    <video v-if="currentMedia && currentMedia.type === 'video'" 
-           :src="currentMedia.url" />
+    <Image :src="currentMedia?.url" />
+    <Video :src="currentMedia?.url" />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
-import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'MediaPlayer',
@@ -22,27 +19,12 @@ export default {
     const response = await axios.get('/api/data');
     this.data = response.data.data;
   },
-  computed: {
-    ...mapGetters(['currentMedia']),
-    currentIndex() {
-      return this.$store.state.currentIndex;
-    },
-    totalSlides() {
-      return this.$store.state.playlist.length;
-    }
-  },
-  methods: {
-    ...mapActions(['playNext']),
-    prevMedia() {
-      this.$store.commit('prev');
-    }
-  },
   components: {
-    image: {
+    Image: {
       props: ['src'],
       template: '<img :src="src" class="media-img" alt="Media" />',
     },
-    video: {
+    Video: {
       props: ['src'],
       template: `
         <video controls autoplay width="640" height="480">
